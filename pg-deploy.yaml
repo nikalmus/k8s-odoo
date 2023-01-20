@@ -1,0 +1,61 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume  
+  labels:
+    type: local  
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi 
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/Users/nik/myproj/kubeproj/odook8s/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim  
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany  
+  resources:
+    requests:
+      storage: 5Gi 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:12
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432  
+          env:
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: odoo
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
