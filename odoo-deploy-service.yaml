@@ -3,7 +3,6 @@ kind: Service
 metadata:    
   name: odoo-service
 spec:
-  #type: NodePort
   type: ClusterIP
   selector:
     app: odoo
