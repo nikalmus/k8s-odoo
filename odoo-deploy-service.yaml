@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: odoo
-        image: testmailqwer/odo:14 #ursamajorapg.azurecr.us/odoo:latest-amd64 
+        image: ursamajorapg.azurecr.us/odoo:latest-amd64 
         ports:
         - containerPort: 8069
         env:
